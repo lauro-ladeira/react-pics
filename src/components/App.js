@@ -1,23 +1,24 @@
 import React from "react";
-import axios from "axios";
+import unsplash from "../api/unsplash";
 import SearchBar from "./SearchBar";
+import ImageList from "./ImageList";
 
 class App extends React.Component {
-  async onSearchSubimit(term) {
-    const response = await axios.get(
-      "https://api.unsplash.com//search/photos/?client_id=1a63a80e7aa16aa0f99ffc13db8e743edb1f8f15be36f2ae9d2cea9687fee099",
-      {
-        params: { query: term }
-      }
-    );
+  state = { images: [] };
 
-    console.log(response);
-  }
+  onSearchSubimit = async term => {
+    const response = await unsplash.get("/search/photos", {
+      params: { query: term }
+    });
+    
+    this.setState({ images: response.data.results });
+  };
 
   render() {
     return (
       <div className="ui container" style={{ marginTop: "10px" }}>
         <SearchBar onSubmit={this.onSearchSubimit} />
+        <ImageList images={this.state.images} />
       </div>
     );
   }
@@ -27,3 +28,5 @@ export default App;
 
 // refatorando o app componente p classe pra ele passar uma prop pra children com uma função de callback,
 //fazendo api requests
+//separou uma pasta soh pras api
+//componente ImageList
